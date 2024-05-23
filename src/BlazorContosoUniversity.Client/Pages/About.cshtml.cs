@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Browser.Interop;
-using Microsoft.AspNetCore.Blazor.Components;
 using System.Linq;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorContosoUniversity.Client.Pages
 {
-    public class AboutModel : BlazorComponent
+    public class AboutModel : ComponentBase
     {
         [Inject] StatisticsServiceClient Client { get; set; }
+        [Inject] IJSRuntime jsRuntime { get; set; }
 
         public bool IsBusy { get; set; }
 
@@ -19,7 +20,7 @@ namespace BlazorContosoUniversity.Client.Pages
 
         List<EnrollmentDateGroupDto> enrollmentsData = new List<EnrollmentDateGroupDto>();
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadStats();
@@ -27,19 +28,13 @@ namespace BlazorContosoUniversity.Client.Pages
             IsBusy = false;
         }
 
-        private async Task LoadEnrollmentStats()
-        {
+        private async Task LoadEnrollmentStats()=>
             enrollmentsData = await Client.GetEnrollmentStats();
-        }
 
-        protected override void OnAfterRender()
-        {
-            RegisteredFunction.Invoke<bool>("drawEnrollmentStatsChart", enrollmentsData);
-        }
+        protected override async Task OnAfterRenderAsync(bool firstRender)=>
+            await jsRuntime.InvokeAsync<bool>("drawEnrollmentStatsChart", enrollmentsData);
 
-        async Task LoadStats()
-        {
+        async Task LoadStats() => 
             Stats = await Client.Get();
-        }
     }
 }

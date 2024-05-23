@@ -2,15 +2,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Courses
 {
-    public class EditModel : BlazorComponent
+    public class EditModel : ComponentBase
     {
-        [Parameter] string CourseID { get; set; }
-        [Inject] IUriHelper UriHelper { get; set; }
+        [Parameter] public string CourseID { get; set; }
+        [Inject] NavigationManager UriHelper { get; set; }
         [Inject] DepartmentsServiceClient DepartmentsClient { get; set; }
         [Inject] CoursesServiceClient CoursesClient { get; set; }
 
@@ -18,7 +17,7 @@ namespace BlazorContosoUniversity.Client.Pages.Courses
         public List<DepartmentDto> Departments { get; set; }
         public CourseDto Course { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadCourse();

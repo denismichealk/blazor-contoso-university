@@ -1,25 +1,23 @@
 ﻿using BlazorContosoUniversity.Client.Services;
-using Microsoft.AspNetCore.Blazor.Browser.Rendering;
-using Microsoft.AspNetCore.Blazor.Browser.Services;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 
-namespace BlazorContosoUniversity.Client
+namespace BlazorContosoUniversity.Client;
+
+public class Program
 {
-    public class Program
+    static async Task Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            var serviceProvider = new BrowserServiceProvider(services =>
-            {
-                services.AddSingleton<StudentsServiceClient>();
-                services.AddSingleton<DepartmentsServiceClient>();
-                services.AddSingleton<CoursesServiceClient>();
-                services.AddSingleton<InstructorsServiceClient>();
-                services.AddSingleton<StatisticsServiceClient>();
-            });
+        
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        builder.Services.AddSingleton<StudentsServiceClient>();
+        builder.Services.AddSingleton<DepartmentsServiceClient>();
+        builder.Services.AddSingleton<CoursesServiceClient>();
+        builder.Services.AddSingleton<InstructorsServiceClient>();
+        builder.Services.AddSingleton<StatisticsServiceClient>();
 
-            new BrowserRenderer(serviceProvider).AddComponent<App>("app");
-        }
+        await builder.Build().RunAsync();
     }
 }

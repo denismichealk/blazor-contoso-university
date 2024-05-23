@@ -14,60 +14,59 @@ using Newtonsoft.Json.Serialization;
 using System.Linq;
 using System.Net.Mime;
 
-namespace BlazorContosoUniversity
+namespace BlazorContosoUniversity;
+
+public class Startup
 {
-    public class Startup
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    // This method gets called by the runtime. Use this method to add services to the container.
+    // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+    public void ConfigureServices(IServiceCollection services)
     {
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        services.AddAutoMapper();
 
-        public IConfiguration Configuration { get; }
+        services.AddDbContext<SchoolContext>(options =>
+           options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-
-            services.AddAutoMapper();
-
-            services.AddDbContext<SchoolContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddMvc()
-                    .AddJsonOptions(options =>
-                    {
-                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                    });
-
-            services.AddResponseCompression(options =>
-            {
-                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+        services.AddMvc()
+                .AddJsonOptions(options =>
                 {
-                    MediaTypeNames.Application.Octet,
-                    WasmMediaTypeNames.Application.Wasm,
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                 });
-            });
-        }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        services.AddResponseCompression(options =>
         {
-            app.UseResponseCompression();
-
-            if (env.IsDevelopment())
+            options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
             {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
+                MediaTypeNames.Application.Octet,
+                WasmMediaTypeNames.Application.Wasm,
             });
+        });
+    }
 
-            app.UseBlazor<Client.Program>();
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    {
+        app.UseResponseCompression();
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
         }
+
+        app.UseMvc(routes =>
+        {
+            routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
+        });
+
+        app.UseBlazor<Client.Program>();
     }
 }

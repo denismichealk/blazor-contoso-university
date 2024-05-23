@@ -1,15 +1,14 @@
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorContosoUniversity.Client.Pages.Courses
 {
-    public class CreateModel : BlazorComponent
+    public class CreateModel : ComponentBase
     {
-        [Inject] IUriHelper UriHelper { get; set; }
+        [Inject] NavigationManager MyNavigationManager { get; set; } = default!;
         [Inject] DepartmentsServiceClient DepartmentsClient { get; set; }
         [Inject] CoursesServiceClient CoursesClient { get; set; }
 
@@ -17,7 +16,7 @@ namespace BlazorContosoUniversity.Client.Pages.Courses
         public List<DepartmentDto> Departments { get; set; }
         public CourseDto Course { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadDepartments();
@@ -34,7 +33,7 @@ namespace BlazorContosoUniversity.Client.Pages.Courses
         public async Task OnSaveClick()
         {
             var updated = await CoursesClient.Create(Course);
-            UriHelper.NavigateTo("/courses");
+            MyNavigationManager.NavigateTo("/courses");
         }
     }
 }

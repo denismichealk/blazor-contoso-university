@@ -1,21 +1,20 @@
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Courses
 {
-    public class DeleteModel : BlazorComponent
+    public class DeleteModel : ComponentBase
     {
-        [Parameter] string CourseID { get; set; }
+        [Parameter] public string CourseID { get; set; }
         [Inject] CoursesServiceClient Client {get;set;}
-        [Inject] IUriHelper UriHelper {get;set;}
+        [Inject] NavigationManager UriHelper {get;set;}
 
         public bool IsBusy { get; set; } = false;
         public CourseDto Course { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadCourse();
