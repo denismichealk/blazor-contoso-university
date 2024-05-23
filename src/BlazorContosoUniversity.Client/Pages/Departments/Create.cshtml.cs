@@ -1,16 +1,15 @@
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorContosoUniversity.Client.Pages.Departments
 {
-    public class CreateModel : BlazorComponent
+    public class CreateModel : ComponentBase
     {
-        [Inject] IUriHelper UriHelper { get; set; }
+        [Inject] NavigationManager UriHelper { get; set; }
         [Inject] InstructorsServiceClient InstructorsClient { get; set; }
         [Inject] DepartmentsServiceClient DepartmentsClient { get; set; }
 
@@ -23,7 +22,7 @@ namespace BlazorContosoUniversity.Client.Pages.Departments
         public int StartYear = DateTime.Today.Year;
         public int LastDayInMonth = DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadInstructors();

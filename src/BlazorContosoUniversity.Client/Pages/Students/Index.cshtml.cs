@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor;
 using BlazorContosoUniversity.Client.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Students
 {
-    public class IndexModel : BlazorComponent
+    public class IndexModel : ComponentBase
     {
         [Inject()]  
         StudentsServiceClient Client { get; set; }
@@ -18,7 +17,7 @@ namespace BlazorContosoUniversity.Client.Pages.Students
         public List<StudentDto> Students { get; set; } = null;
         public string SearchString { get; set; } = "";
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             await LoadStudents();
         } 

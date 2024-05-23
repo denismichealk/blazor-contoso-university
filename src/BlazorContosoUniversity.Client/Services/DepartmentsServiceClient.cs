@@ -1,8 +1,8 @@
 ﻿using BlazorContosoUniversity.Shared;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
 
 namespace BlazorContosoUniversity.Client.Services
 {
@@ -18,13 +18,13 @@ namespace BlazorContosoUniversity.Client.Services
 
         public async Task<List<DepartmentDto>> Get()
         {
-            return await _client.GetJsonAsync<List<DepartmentDto>>(_baseUrl);
+            return await _client.GetFromJsonAsync<List<DepartmentDto>>(_baseUrl);
         }
 
         public async Task<DepartmentDto> GetDetails(string id)
         {
             var url = $"{_baseUrl}/{id}";
-            return await _client.GetJsonAsync<DepartmentDto>(url);
+            return await _client.GetFromJsonAsync<DepartmentDto>(url);
         }
 
         public async Task<bool> Create(DepartmentDto department)
@@ -33,7 +33,7 @@ namespace BlazorContosoUniversity.Client.Services
             var created = false;
             try
             {
-                await _client.PostJsonAsync<CourseDto>(url, department);
+                await _client.PostAsJsonAsync<DepartmentDto>(url, department);
                 created = true;
             }
             catch
@@ -49,7 +49,7 @@ namespace BlazorContosoUniversity.Client.Services
             var updated = false;
             try
             {
-                await _client.PutJsonAsync<DepartmentDto>(url, department);
+                await _client.PutAsJsonAsync<DepartmentDto>(url, department);
                 updated = true;
             }
             catch

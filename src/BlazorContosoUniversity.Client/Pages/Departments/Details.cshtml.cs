@@ -1,19 +1,19 @@
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Departments
 {
-    public class DetailsModel : BlazorComponent
+    public class DetailsModel : ComponentBase
     {
-        [Parameter] string DeptID { get; set; }
+        [Parameter] public string DeptID { get; set; }
         [Inject] DepartmentsServiceClient Client { get; set; }
 
         public bool IsBusy { get; set; }
         public DepartmentDto Department;
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadDepartment(DeptID);

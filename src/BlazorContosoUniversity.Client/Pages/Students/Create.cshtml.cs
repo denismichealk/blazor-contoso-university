@@ -2,17 +2,16 @@ using System;
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Students
 {
-    public class CreateModel : BlazorComponent
+    public class CreateModel : ComponentBase
     {
         [Inject()]
         StudentsServiceClient Client { get; set; }
         [Inject()]
-        IUriHelper UriHelper { get; set; }
+        NavigationManager UriHelper { get; set; }
 
         public StudentDto Student;
         public int Day;
@@ -20,7 +19,7 @@ namespace BlazorContosoUniversity.Client.Pages.Students
         public int Year;
         public int LastDayInMonth;
 
-        protected override void OnInit()
+        protected override async Task OnInitializedAsync()
         {
             Student = new StudentDto()
             {
@@ -30,6 +29,7 @@ namespace BlazorContosoUniversity.Client.Pages.Students
             Month = DateTime.Today.Month;
             Year = DateTime.Today.Year;
             LastDayInMonth = DateTime.DaysInMonth(Year, Month);
+            await Task.CompletedTask;
         }
 
         public async Task OnSaveClick()

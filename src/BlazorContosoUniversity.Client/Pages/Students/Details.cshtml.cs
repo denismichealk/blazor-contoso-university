@@ -1,23 +1,22 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor;
 using BlazorContosoUniversity.Client.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Students
 {
-    public class DetailsModel : BlazorComponent
+    public class DetailsModel : ComponentBase
     {
         [Parameter]
-        string StudentId { get; set; }
+        public string StudentId { get; set; }
 
         [Inject()]
         StudentsServiceClient Client { get; set; }
 
         public StudentDetailsDto Student { get; set; } = null;
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             Student = await Client.GetDetails(StudentId);
             StateHasChanged();

@@ -1,8 +1,8 @@
 ﻿using BlazorContosoUniversity.Shared;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
 
 namespace BlazorContosoUniversity.Client.Services
 {
@@ -16,15 +16,13 @@ namespace BlazorContosoUniversity.Client.Services
             _client = client;
         }
 
-        public async Task<List<InstructorDto>> Get()
-        {
-            return await _client.GetJsonAsync<List<InstructorDto>>(_baseUrl);
-        }
+        public async Task<List<InstructorDto>> Get() 
+            => await _client.GetFromJsonAsync<List<InstructorDto>>(_baseUrl);
 
         public async Task<InstructorDto> GetDetails(string id)
         {
             var url = $"{_baseUrl}/{id}";
-            return await _client.GetJsonAsync<InstructorDto>(url);
+            return await _client.GetFromJsonAsync<InstructorDto>(url);
         }
 
         public async Task<bool> Create(InstructorDto instructor)
@@ -33,7 +31,7 @@ namespace BlazorContosoUniversity.Client.Services
             var created = false;
             try
             {
-                await _client.PostJsonAsync<InstructorDto>(url, instructor);
+                await _client.PostAsJsonAsync<InstructorDto>(url, instructor);
                 created = true;
             }
             catch
@@ -49,7 +47,7 @@ namespace BlazorContosoUniversity.Client.Services
             var updated = false;
             try
             {
-                await _client.PutJsonAsync<CourseDto>(url, instructor);
+                await _client.PutAsJsonAsync<InstructorDto>(url, instructor);
                 updated = true;
             }
             catch

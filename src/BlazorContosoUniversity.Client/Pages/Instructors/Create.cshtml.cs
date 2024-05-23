@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Models;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Instructors
 {
-    public class CreateModel : BlazorComponent
+    public class CreateModel : ComponentBase
     {
-        [Inject] IUriHelper UriHelper { get; set; }
+        [Inject] NavigationManager UriHelper { get; set; }
         [Inject] InstructorsServiceClient InstructorClient { get; set; }
         [Inject] CoursesServiceClient CoursesClient { get; set; }
 
@@ -25,7 +24,7 @@ namespace BlazorContosoUniversity.Client.Pages.Instructors
         public int HireMonth = DateTime.Today.Month;
         public int HireYear = DateTime.Today.Year;
         public int LastDayInMonth = DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadCourses();

@@ -2,19 +2,19 @@ using System;
 using System.Threading.Tasks;
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorContosoUniversity.Client.Pages.Instructors
 {
-    public class DetailsModel : BlazorComponent
+    public class DetailsModel : ComponentBase
     {
-       [Parameter] string InstructorID { get; set; }
+       [Parameter] public string InstructorID { get; set; }
        [Inject] InstructorsServiceClient Client { get; set; }
 
         public bool IsBusy { get; set; }
         public InstructorDto Instructor { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadInstructor(InstructorID);

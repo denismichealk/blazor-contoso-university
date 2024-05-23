@@ -1,22 +1,21 @@
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
 namespace BlazorContosoUniversity.Client.Pages.Departments
 {
-    public class DeleteModel : BlazorComponent
+    public class DeleteModel : ComponentBase
     {
-        [Inject] IUriHelper UriHelper { get; set; }
-        [Parameter] string DepartmentID { get; set; }
+        [Inject] NavigationManager UriHelper { get; set; }
+        [Parameter] public string DepartmentID { get; set; }
         [Inject] DepartmentsServiceClient Client { get; set; }
 
 
         public bool IsBusy { get; set; }
         public DepartmentDto Department;
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             IsBusy = true;
             await LoadDepartment(DepartmentID);

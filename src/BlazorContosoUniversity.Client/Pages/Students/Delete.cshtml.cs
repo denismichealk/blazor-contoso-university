@@ -1,23 +1,22 @@
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
 namespace BlazorContosoUniversity.Client.Pages.Students
 {
-    public class DeleteModel : BlazorComponent
+    public class DeleteModel : ComponentBase
     {
         [Parameter]
-        string StudentId { get; set; }
+        public string StudentId { get; set; }
         [Inject()]
         StudentsServiceClient Client { get; set; }
         [Inject()]
-        IUriHelper UriHelper { get; set; }
+        NavigationManager UriHelper { get; set; }
 
         public StudentDto Student { get; set; } = null;
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             Student = await Client.Get(StudentId);
         }

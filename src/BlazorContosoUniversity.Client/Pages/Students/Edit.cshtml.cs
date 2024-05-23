@@ -1,17 +1,16 @@
 using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.Services;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading.Tasks;
 
 namespace BlazorContosoUniversity.Client.Pages.Students
 {
-    public class EditModel : BlazorComponent
+    public class EditModel : ComponentBase
     {
-        [Parameter] string StudentId { get; set; }
+        [Parameter] public string StudentId { get; set; }
         [Inject] StudentsServiceClient Client { get; set; }
-        [Inject] IUriHelper UriHelper { get; set; }
+        [Inject] NavigationManager UriHelper { get; set; }
 
         public StudentDto Student { get; set; }
         public bool IsBusy { get; set; } = false;
@@ -20,7 +19,7 @@ namespace BlazorContosoUniversity.Client.Pages.Students
         public int Month { get; set; }
         public int Year { get; set; }
 
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
             await LoadStudent();
         }
