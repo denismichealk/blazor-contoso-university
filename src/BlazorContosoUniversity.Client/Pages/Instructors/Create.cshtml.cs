@@ -7,65 +7,64 @@ using BlazorContosoUniversity.Client.Services;
 using BlazorContosoUniversity.Shared;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorContosoUniversity.Client.Pages.Instructors
+namespace BlazorContosoUniversity.Client.Pages.Instructors;
+
+public class CreateModel : ComponentBase
 {
-    public class CreateModel : ComponentBase
+    [Inject] NavigationManager UriHelper { get; set; }
+    [Inject] InstructorsServiceClient InstructorClient { get; set; }
+    [Inject] CoursesServiceClient CoursesClient { get; set; }
+
+    public bool IsBusy { get; set; } = false;
+    public InstructorDto Instructor { get; set; } = null;
+    public List<CourseDto> Courses { get; set; }
+    public List<AssignedCourseData> AssignedCourses;
+
+    public int HireDay = DateTime.Today.Day;
+    public int HireMonth = DateTime.Today.Month;
+    public int HireYear = DateTime.Today.Year;
+    public int LastDayInMonth = DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
+    protected async override Task OnInitializedAsync()
     {
-        [Inject] NavigationManager UriHelper { get; set; }
-        [Inject] InstructorsServiceClient InstructorClient { get; set; }
-        [Inject] CoursesServiceClient CoursesClient { get; set; }
+        IsBusy = true;
+        await LoadCourses();
+        LoadInstructor();
+        IsBusy = false;
+    }
 
-        public bool IsBusy { get; set; } = false;
-        public InstructorDto Instructor { get; set; } = null;
-        public List<CourseDto> Courses { get; set; }
-        public List<AssignedCourseData> AssignedCourses;
+    async Task LoadCourses()
+    {
+        Courses = await CoursesClient.Get();
+    }
 
-        public int HireDay = DateTime.Today.Day;
-        public int HireMonth = DateTime.Today.Month;
-        public int HireYear = DateTime.Today.Year;
-        public int LastDayInMonth = DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
-        protected override async Task OnInitializedAsync()
+    void LoadInstructor()
+    {
+        Instructor = new InstructorDto();
+        AssignedCourses = new List<AssignedCourseData>();
+        foreach (var course in Courses)
         {
-            IsBusy = true;
-            await LoadCourses();
-            LoadInstructor();
-            IsBusy = false;
-        }
-
-        async Task LoadCourses()
-        {
-            Courses = await CoursesClient.Get();
-        }
-
-        void LoadInstructor()
-        {
-            Instructor = new InstructorDto();
-            AssignedCourses = new List<AssignedCourseData>();
-            foreach (var course in Courses)
+            AssignedCourses.Add(new AssignedCourseData
             {
-                AssignedCourses.Add(new AssignedCourseData
-                {
-                    CourseID = course.Id,
-                    Title = course.Title,
-                    Assigned = false
-                });
-            }
+                CourseID = course.Id,
+                Title = course.Title,
+                Assigned = false
+            });
         }
+    }
 
-        public async Task OnSaveClick()
+    public async Task OnSaveClick()
+    {
+        Instructor.HireDate = DateTime.Parse($"{HireYear}/{HireMonth}/{HireDay}");
+        Instructor.Courses = new List<CourseAssignmentDto>();
+        foreach (var item in AssignedCourses.Where(c => c.Assigned))
         {
-            Instructor.HireDate = DateTime.Parse($"{HireYear}/{HireMonth}/{HireDay}");
-            Instructor.Courses = new List<CourseAssignmentDto>();
-            foreach (var item in AssignedCourses.Where(c => c.Assigned))
+            Instructor.Courses.Add(new CourseAssignmentDto
             {
-                Instructor.Courses.Add(new CourseAssignmentDto
-                {
-                    CourseID = item.CourseID,
-                    CourseTitle = item.Title
-                });
-            }
-            var created = await InstructorClient.Create(Instructor);
-            UriHelper.NavigateTo("/instructors");
+                CourseID = item.CourseID,
+                CourseTitle = item.Title
+            });
         }
+        var created = await InstructorClient.Create(Instructor);
+        UriHelper.NavigateTo("/instructors");
     }
 }
