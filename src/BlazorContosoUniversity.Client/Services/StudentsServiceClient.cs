@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
 
 namespace BlazorContosoUniversity.Client.Services
 {
@@ -20,19 +20,19 @@ namespace BlazorContosoUniversity.Client.Services
         public async Task<List<StudentDto>> Get(string searchString, string sortCol, string sortOrder)
         {
             var url = $"{_baseUrl}?query={searchString}&sortcol={sortCol}&sortorder={sortOrder}";
-            return await _client.GetJsonAsync<List<StudentDto>>(url);
+            return await _client.GetFromJsonAsync<List<StudentDto>>(url);
         }
 
         public async Task<StudentDto> Get(string StudentId)
         {
             var url = $"{_baseUrl}/{StudentId}";
-            return await _client.GetJsonAsync<StudentDto>(url);
+            return await _client.GetFromJsonAsync<StudentDto>(url);
         }
 
         public async Task<StudentDetailsDto> GetDetails(string StudentId)
         {
             var url = $"{_baseUrl}/{StudentId}/details";
-            return await _client.GetJsonAsync<StudentDetailsDto>(url);
+            return await _client.GetFromJsonAsync<StudentDetailsDto>(url);
         }
 
         public async Task<bool> Create(StudentDto student)
@@ -41,7 +41,7 @@ namespace BlazorContosoUniversity.Client.Services
             var created = false;
             try
             {
-                await _client.PostJsonAsync<StudentDto>(url, student);
+                await _client.PostAsJsonAsync<StudentDto>(url, student);
                 created = true;
             }
             catch
@@ -57,7 +57,7 @@ namespace BlazorContosoUniversity.Client.Services
             var updated = false;
             try
             {
-                await _client.PutJsonAsync<StudentDetailsDto>(url,student);
+                await _client.PutAsJsonAsync<StudentDto>(url,student);
                 updated = true;
             }
             catch

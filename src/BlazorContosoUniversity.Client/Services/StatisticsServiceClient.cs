@@ -11,7 +11,7 @@ namespace BlazorContosoUniversity.Client.Services
     public class StatisticsServiceClient
     {
         HttpClient _client;
-        var _baseUrl = "/api/statistics";
+        string _baseUrl = "/api/statistics";
         public StatisticsServiceClient(HttpClient client) =>
             _client = client;
 
